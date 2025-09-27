@@ -89,20 +89,26 @@ for song in bach:
         index_from = states.index(x_tm1)
         index_to = states.index(x_t)
         # Update transition counts:
-        tr_counts[index_from, index_to] += 1
+        tr_counts[index_to, index_from] += 1
 
 print('Transition Counts:\n', tr_counts)
 
 # Sum the transition counts by row:
-row_sums = tr_counts.sum(axis=1, keepdims=True)
-random_pr = row_sums/np.sum(row_sums)
-print('\nState proportions: ', random_pr)
+#col_sums = tr_counts.sum(axis=0, keepdims=True)
+col_sums = tr_counts.sum(axis=0)
+print('State proportions: \n')
 
+tr_df = pd.DataFrame(col_sums/np.sum(col_sums,axis=1), index=states)
+print(tr_df)
 # Normalize the transition count matrix to get proportions:
-tr_pr = np.divide(tr_counts, row_sums, 
-                            out=np.zeros_like(tr_counts), 
-                            where=row_sums!=0)
-print('\nTransition Proportions:\n', tr_pr)
+tr_pr = np.divide(tr_counts, col_sums, 
+                             out=np.zeros_like(tr_counts), 
+                             where=col_sums!=0)
+
+print('Transition Proportions:\n')
+
+tr_df = pd.DataFrame(np.round(tr_pr,2), index=states, columns=states)
+print(tr_df)
 
 plt.figure(figsize=(12, 10))
 sns.heatmap(tr_pr, 
