@@ -60,7 +60,7 @@ for chord_symbol in states:
 stream.write('midi', fp='music.mid')
 stream.show('midi')  
 
-# An original Bach chorale
+# An authentic Bach chorale
 stream = music21.stream.Stream()
 for chord_symbol in bach[5]:
     chord = music21.harmony.ChordSymbol(chord_symbol)
@@ -94,16 +94,14 @@ for song in bach:
 print('Transition Counts:\n', tr_counts)
 
 # Sum the transition counts by row:
-#col_sums = tr_counts.sum(axis=0, keepdims=True)
-col_sums = tr_counts.sum(axis=0)
+
+row_sums = tr_counts.sum(axis=0)
 print('State proportions: \n')
 
-tr_df = pd.DataFrame(col_sums/np.sum(col_sums,axis=1), index=states)
-print(tr_df)
 # Normalize the transition count matrix to get proportions:
-tr_pr = np.divide(tr_counts, col_sums, 
+tr_pr = np.divide(tr_counts, row_sums, 
                              out=np.zeros_like(tr_counts), 
-                             where=col_sums!=0)
+                             where=row_sums!=0)
 
 print('Transition Proportions:\n')
 
@@ -132,8 +130,7 @@ plt.show()
 # %%
 
 ## Random chords:
-
-random_pr = [ random_pr[i][0] for i in range(len(random_pr))]
+random_pr = row_sums/np.sum(row_sums)
 
 np.random.seed(100) 
 initial_state = np.random.choice(states) # Choose an initial state at random
@@ -149,7 +146,7 @@ print(simulation)
 
 new_chorale = [state.split()[-1] for state in simulation] # Convert to chords
 
-# New Bach chorale
+# New random chorale
 stream = music21.stream.Stream()
 for chord_symbol in new_chorale:
     chord = music21.harmony.ChordSymbol(chord_symbol)
@@ -168,7 +165,7 @@ G = nx.from_numpy_array(tr_pr, create_using=nx.DiGraph())
 
 # Check if strongly connected (every chord can reach every other chord)
 is_strongly_connected = nx.is_strongly_connected(G)
-print(f"Strongly connected: {is_strongly_connected}")
+print(f"Connected: {is_strongly_connected}")
 
 # Get connected components if not connected
 if not is_strongly_connected:
@@ -196,37 +193,33 @@ states = list(states)
 
 print('States:\n', np.array(states) )
 
-
-
 S = len(states)
 tr_counts = np.zeros( (S, S) )
 
-## Compute transition counts:
+# Fix the transition counting (around line where you have the nested loops):
 for song in songs:
     seq = np.array(song)
     for t in range(1,len(seq)):
-        # Current and next tokens:
         x_tm1 = seq[t-1] # previous state
         x_t = seq[t] # current state
-        # Determine transition indices:
         index_from = states.index(x_tm1)
         index_to = states.index(x_t)
-        # Update transition counts:
-        tr_counts[index_from, index_to] += 1
+        # Fix this line - you had it backwards:
+        tr_counts[index_to, index_from] += 1  # TO, FROM not FROM, TO
 
-print(f'Transition Counts:\n {tr_counts}')
-
-
-# Sum the transition counts by row:
+# Fix the normalization section:
+# Change this:
 row_sums = tr_counts.sum(axis=1, keepdims=True)
 random_pr = row_sums/np.sum(row_sums)
-print('\nState proportions: ', random_pr)
 
+# To this:
+col_sums = tr_counts.sum(axis=0, keepdims=True)
+state_props = col_sums/np.sum(col_sums)
 
-# Normalize the transition count matrix to get proportions:
-tr_pr = np.divide(tr_counts, row_sums, 
-                            out=np.zeros_like(tr_counts), 
-                            where=row_sums!=0)
+# And fix the transition probability normalization:
+tr_pr = np.divide(tr_counts, col_sums, 
+                 out=np.zeros_like(tr_counts), 
+                 where=col_sums!=0)
 print('\nTransition Proportions:\n', tr_pr)
 
 
@@ -272,18 +265,23 @@ if not is_strongly_connected:
 
 ## Generate new music:
 
-np.random.seed(111) # Favorite
+np.random.seed(1000) # Favorite
 #np.random.seed(5000) 
 initial_state = np.random.choice(states) # Choose an initial state at random
+
+
+initial_state = 'E B'
+#initial_state = 'Am Dm'
+
 
 state_index = states.index(initial_state) # Get the index of the initial state
 print(f'Initial state: {initial_state}') 
 
-n_sim = 15
+n_sim = 10
 
 simulation = [initial_state]
 for t in range(n_sim-1): 
-    pr_t = tr_pr[state_index] # Transition probabilities at this state
+    pr_t = tr_pr[:,state_index] # Transition probabilities at this state
     state_index = np.random.choice(len(states), p=pr_t) # Choose new state index
     simulation.append(states[state_index]) # Append new state to simulation
 
