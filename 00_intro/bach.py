@@ -207,12 +207,6 @@ for song in songs:
         # Fix this line - you had it backwards:
         tr_counts[index_to, index_from] += 1  # TO, FROM not FROM, TO
 
-# Fix the normalization section:
-# Change this:
-row_sums = tr_counts.sum(axis=1, keepdims=True)
-random_pr = row_sums/np.sum(row_sums)
-
-# To this:
 col_sums = tr_counts.sum(axis=0, keepdims=True)
 state_props = col_sums/np.sum(col_sums)
 
@@ -270,8 +264,8 @@ np.random.seed(1000) # Favorite
 initial_state = np.random.choice(states) # Choose an initial state at random
 
 
-initial_state = 'E B'
-#initial_state = 'Am Dm'
+#initial_state = 'E B'
+initial_state = 'Am Dm'
 
 
 state_index = states.index(initial_state) # Get the index of the initial state
