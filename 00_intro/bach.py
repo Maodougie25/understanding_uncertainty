@@ -94,14 +94,13 @@ for song in bach:
 print('Transition Counts:\n', tr_counts)
 
 # Sum the transition counts by row:
-
-row_sums = tr_counts.sum(axis=0)
+sums = tr_counts.sum(axis=1, keepdims=True)
 print('State proportions: \n')
 
 # Normalize the transition count matrix to get proportions:
-tr_pr = np.divide(tr_counts, row_sums, 
+tr_pr = np.divide(tr_counts, sums, 
                              out=np.zeros_like(tr_counts), 
-                             where=row_sums!=0)
+                             where=sums!=0)
 
 print('Transition Proportions:\n')
 
@@ -204,16 +203,15 @@ for song in songs:
         x_t = seq[t] # current state
         index_from = states.index(x_tm1)
         index_to = states.index(x_t)
-        # Fix this line - you had it backwards:
         tr_counts[index_to, index_from] += 1  # TO, FROM not FROM, TO
 
-col_sums = tr_counts.sum(axis=0, keepdims=True)
-state_props = col_sums/np.sum(col_sums)
+sums = tr_counts.sum(axis=1, keepdims=True)
+state_props = sums/np.sum(sums)
 
 # And fix the transition probability normalization:
-tr_pr = np.divide(tr_counts, col_sums, 
+tr_pr = np.divide(tr_counts, sums, 
                  out=np.zeros_like(tr_counts), 
-                 where=col_sums!=0)
+                 where=sums!=0)
 print('\nTransition Proportions:\n', tr_pr)
 
 
@@ -259,19 +257,19 @@ if not is_strongly_connected:
 
 ## Generate new music:
 
-np.random.seed(1000) # Favorite
+np.random.seed(10000) # Favorite
 #np.random.seed(5000) 
 initial_state = np.random.choice(states) # Choose an initial state at random
 
 
-#initial_state = 'E B'
-initial_state = 'Am Dm'
+initial_state = 'E B'
+#initial_state = 'Am Dm'
 
 
 state_index = states.index(initial_state) # Get the index of the initial state
 print(f'Initial state: {initial_state}') 
 
-n_sim = 10
+n_sim = 20
 
 simulation = [initial_state]
 for t in range(n_sim-1): 
