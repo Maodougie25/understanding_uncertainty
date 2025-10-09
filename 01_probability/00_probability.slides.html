@@ -7551,6 +7551,7 @@ main {
 <li>The empty set $\varnothing$ is the set with no elements; it's useful for thinking about edge cases</li>
 <li>To assert that an object $x$ is an element of a set $A$, we write $x \in A$</li>
 <li>Mostly, we write $A = \{ x: \text{the proposition } P(x) \text{ is true } \}$, where $:$ means "such that". This is called <strong>set builder</strong> notation</li>
+<li>A <strong>subset</strong> $B$ of a set $A$ is a set of elements from $A$ that comprise a set, and we write $B \subseteq A$ or $B \subset A$</li>
 </ul>
 </div>
 </div>
@@ -7602,9 +7603,8 @@ main {
 <h2 id="Exercises">Exercises<a class="anchor-link" href="#Exercises">¶</a></h2><p>State these relations in words, and show they're true (venn diagrams can be useful to sketch your intuition):</p>
 <ul>
 <li>$ (A \backslash B) \cup (A \cap B) = A $</li>
-<li>$ (A \cup B)^c = A^c \cap B^c $, $ (A\cap B)^c = A^c \cup B^c$</li>
 <li>$ A \cup ( B \cap C) = (A \cup B) \cap (A \cup C)$</li>
-<li>$ A \Delta B  = (A \backslash B) \cup (B \backslash A)$</li>
+<li>$ A \backslash (B \cup C) = A\backslash B \cap A \backslash C $ and $A \backslash (B \cap C) = A \backslash B \cup A \backslash C$</li>
 </ul>
 <p>Hint: Sometimes to show that $A = B$, it's easier to show that $ A \subseteq B$ and $B \subseteq A$</p>
 </div>
@@ -7692,7 +7692,7 @@ main {
 </li>
 <li>An <strong>event</strong> is a subset of outcomes, $E \subset \mathcal{Z}$<ul>
 <li>If an event $E$ is possible, then the <strong>complementary event</strong> is all of the outcomes not included in $E$, which we typically write as: $E^c = \mathcal{Z}\backslash E$. We "divide" all the outcomes in the event $E$ out of the set of all outcomes $ \mathcal{Z}$.</li>
-<li>Events are sets: We can take unions $\cup$, intersections $\cap$, relative complements $\backslash$, symmetric differences $\Delta$, etc.</li>
+<li>Events are sets: We can take unions $\cup$, intersections $\cap$, relative complements $\backslash$, etc.</li>
 </ul>
 </li>
 </ul>
