@@ -8,7 +8,7 @@ import seaborn as sns
 import statsmodels.api as sm
 from skimpy import skim
 
-df = pd.read_csv('./01_probability/data/nhanes_data_17_18.csv',low_memory=False)
+df = pd.read_csv('./data/nhanes_data_17_18.csv',low_memory=False)
 print(df.head())
 skim(df)
 

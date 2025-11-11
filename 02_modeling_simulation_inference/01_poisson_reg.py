@@ -8,7 +8,7 @@ import statsmodels.api as sm
 from skimpy import skim
 from statsmodels.discrete.discrete_model import Poisson
 
-df = pd.read_csv('./01_probability/data/metabric.csv',low_memory=False)
+df = pd.read_csv('./data/metabric.csv',low_memory=False)
 print(df.head())
 skim(df)
 

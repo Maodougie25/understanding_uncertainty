@@ -11,7 +11,7 @@ from skimpy import skim
 
 ## Load data, basic EDA:
 
-df = pd.read_csv('./01_probability/data/ames_prices.csv',low_memory=False)
+df = pd.read_csv('./data/ames_prices.csv',low_memory=False)
 print(df.head())
 skim(df)
 
